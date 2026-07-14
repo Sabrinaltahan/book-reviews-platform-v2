@@ -1,5 +1,6 @@
 import type {
   Book,
+  BookDetails,
   OpenLibrarySearchResponse,
 } from "../types/book";
 
@@ -36,4 +37,26 @@ export async function searchBooks(
     await response.json();
 
   return data.docs ?? [];
+}
+
+export async function getBookDetails(
+  workId: string
+): Promise<BookDetails> {
+  const response = await fetch(
+    `https://openlibrary.org/works/${encodeURIComponent(workId)}.json`
+  );
+
+  if (!response.ok) {
+    if (response.status === 404) {
+      throw new Error("Book not found.");
+    }
+
+    throw new Error(
+      `Could not fetch book details. Server returned ${response.status}.`
+    );
+  }
+
+  const data: BookDetails = await response.json();
+
+  return data;
 }

@@ -15,3 +15,36 @@ export interface OpenLibrarySearchResponse {
   start: number;
   docs: Book[];
 }
+
+
+export interface OpenLibraryDescription {
+  type?: string;
+  value: string;
+}
+
+export interface AuthorReference {
+  author: {
+    key: string;
+  };
+  type?: {
+    key: string;
+  };
+}
+
+export interface BookDetails {
+  key: string;
+  title: string;
+  description?: string | OpenLibraryDescription;
+  covers?: number[];
+  subjects?: string[];
+  authors?: AuthorReference[];
+  first_publish_date?: string;
+  created?: {
+    type: string;
+    value: string;
+  };
+  last_modified?: {
+    type: string;
+    value: string;
+  };
+}
