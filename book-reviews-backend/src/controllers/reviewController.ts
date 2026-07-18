@@ -145,3 +145,35 @@ export async function createReview(
     });
   }
 }
+
+export async function getMyReviews(
+  req: AuthenticatedRequest,
+  res: Response
+) {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Authentication is required.",
+      });
+    }
+
+    const reviews = await prisma.review.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return res.status(200).json(reviews);
+  } catch (error) {
+    console.error("Get my reviews error:", error);
+
+    return res.status(500).json({
+      message: "Could not fetch your reviews.",
+    });
+  }
+}
