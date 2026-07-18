@@ -100,7 +100,7 @@ export async function createReview(
       where: {
         userId_bookId: {
           userId,
-          bookId,
+          bookId: bookId.trim(),
         },
       },
     });
@@ -174,6 +174,153 @@ export async function getMyReviews(
 
     return res.status(500).json({
       message: "Could not fetch your reviews.",
+    });
+  }
+}
+
+export async function updateReview(
+  req: AuthenticatedRequest & {
+    params: {
+      reviewId: string;
+    };
+  },
+  res: Response
+) {
+  try {
+    const userId = req.userId;
+    const reviewId = Number(req.params.reviewId);
+    const { reviewText, rating } = req.body;
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Authentication is required.",
+      });
+    }
+
+    if (!Number.isInteger(reviewId) || reviewId <= 0) {
+      return res.status(400).json({
+        message: "Invalid review ID.",
+      });
+    }
+
+    if (
+      typeof reviewText !== "string" ||
+      reviewText.trim().length < 10
+    ) {
+      return res.status(400).json({
+        message: "Review text must be at least 10 characters.",
+      });
+    }
+
+    const numericRating = Number(rating);
+
+    if (
+      !Number.isInteger(numericRating) ||
+      numericRating < 1 ||
+      numericRating > 5
+    ) {
+      return res.status(400).json({
+        message: "Rating must be an integer between 1 and 5.",
+      });
+    }
+
+    const existingReview = await prisma.review.findUnique({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    if (!existingReview) {
+      return res.status(404).json({
+        message: "Review not found.",
+      });
+    }
+
+    if (existingReview.userId !== userId) {
+      return res.status(403).json({
+        message: "You can only edit your own reviews.",
+      });
+    }
+
+    const updatedReview = await prisma.review.update({
+      where: {
+        id: reviewId,
+      },
+      data: {
+        reviewText: reviewText.trim(),
+        rating: numericRating,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Review updated successfully.",
+      review: updatedReview,
+    });
+  } catch (error) {
+    console.error("Update review error:", error);
+
+    return res.status(500).json({
+      message: "Could not update review.",
+    });
+  }
+}
+
+export async function deleteReview(
+  req: AuthenticatedRequest & {
+    params: {
+      reviewId: string;
+    };
+  },
+  res: Response
+) {
+  try {
+    const userId = req.userId;
+    const reviewId = Number(req.params.reviewId);
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Authentication is required.",
+      });
+    }
+
+    if (!Number.isInteger(reviewId) || reviewId <= 0) {
+      return res.status(400).json({
+        message: "Invalid review ID.",
+      });
+    }
+
+    const existingReview = await prisma.review.findUnique({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    if (!existingReview) {
+      return res.status(404).json({
+        message: "Review not found.",
+      });
+    }
+
+    if (existingReview.userId !== userId) {
+      return res.status(403).json({
+        message: "You can only delete your own reviews.",
+      });
+    }
+
+    await prisma.review.delete({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    return res.status(200).json({
+      message: "Review deleted successfully.",
+    });
+  } catch (error) {
+    console.error("Delete review error:", error);
+
+    return res.status(500).json({
+      message: "Could not delete review.",
     });
   }
 }
