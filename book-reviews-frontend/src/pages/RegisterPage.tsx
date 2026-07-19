@@ -9,16 +9,11 @@ export default function RegisterPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] =
-    useState("");
-
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
 
@@ -33,9 +28,7 @@ export default function RegisterPage() {
     }
 
     if (password.length < 6) {
-      setError(
-        "Password must be at least 6 characters."
-      );
+      setError("Password must be at least 6 characters.");
       return;
     }
 
@@ -70,10 +63,7 @@ export default function RegisterPage() {
       <div className="auth-card">
         <h1>Create Account</h1>
 
-        <p>
-          Create an account to write and manage
-          reviews.
-        </p>
+        <p>Create an account to write and manage reviews.</p>
 
         {error && (
           <p className="error-message" role="alert">
@@ -81,56 +71,41 @@ export default function RegisterPage() {
           </p>
         )}
 
-        <form
-          className="auth-form"
-          onSubmit={handleSubmit}
-        >
+        <form className="auth-form" onSubmit={handleSubmit}>
           <div className="form-group">
-            <label htmlFor="register-name">
-              Name
-            </label>
+            <label htmlFor="register-name">Name</label>
 
             <input
               id="register-name"
               type="text"
               value={name}
-              onChange={(event) =>
-                setName(event.target.value)
-              }
+              onChange={(event) => setName(event.target.value)}
               autoComplete="name"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="register-email">
-              Email
-            </label>
+            <label htmlFor="register-email">Email</label>
 
             <input
               id="register-email"
               type="email"
               value={email}
-              onChange={(event) =>
-                setEmail(event.target.value)
-              }
+              onChange={(event) => setEmail(event.target.value)}
               autoComplete="email"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="register-password">
-              Password
-            </label>
+            <label htmlFor="register-password">Password</label>
 
             <input
               id="register-password"
               type="password"
               value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
-              }
+              onChange={(event) => setPassword(event.target.value)}
               autoComplete="new-password"
               minLength={6}
               required

@@ -1,5 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import Layout from "./components/layout/Layout";
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import HomePage from "./pages/HomePage";
 import SearchPage from "./pages/SearchPage";
 import BookDetailsPage from "./pages/BookDetailsPage";
@@ -7,6 +9,7 @@ import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import MyReviewsPage from "./pages/MyReviewsPage";
 import NotFoundPage from "./pages/NotFoundPage";
+
 import "./App.css";
 
 export default function App() {
@@ -18,7 +21,16 @@ export default function App() {
         <Route path="/books/:bookId" element={<BookDetailsPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/my-reviews" element={<MyReviewsPage />} />
+
+        <Route
+          path="/my-reviews"
+          element={
+            <ProtectedRoute>
+              <MyReviewsPage />
+            </ProtectedRoute>
+          }
+        />
+
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

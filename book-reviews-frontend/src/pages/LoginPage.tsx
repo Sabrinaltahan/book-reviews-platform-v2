@@ -1,9 +1,5 @@
 import { useState, type FormEvent } from "react";
-import {
-  Link,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/useAuth";
 
 interface LocationState {
@@ -16,30 +12,20 @@ export default function LoginPage() {
   const { login } = useAuth();
 
   const [email, setEmail] = useState("");
-  const [password, setPassword] =
-    useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const locationState =
-    location.state as LocationState | null;
+  const locationState = location.state as LocationState | null;
 
-  async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
-  ) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-
-    if (!email.trim() || !password) {
-      setError("Email and password are required.");
-      return;
-    }
 
     try {
       setIsSubmitting(true);
 
-      await login(email.trim(), password);
+      await login(email, password);
 
       navigate(locationState?.from ?? "/search", {
         replace: true,
@@ -60,14 +46,8 @@ export default function LoginPage() {
       <div className="auth-card">
         <h1>Login</h1>
 
-        <p>
-          Log in to write and manage your reviews.
-        </p>
-
         {error && (
-          <p className="error-message" role="alert">
-            {error}
-          </p>
+          <p className="error-message">{error}</p>
         )}
 
         <form
@@ -75,42 +55,33 @@ export default function LoginPage() {
           onSubmit={handleSubmit}
         >
           <div className="form-group">
-            <label htmlFor="login-email">
-              Email
-            </label>
+            <label>Email</label>
 
             <input
-              id="login-email"
               type="email"
               value={email}
-              onChange={(event) =>
-                setEmail(event.target.value)
+              onChange={(e) =>
+                setEmail(e.target.value)
               }
-              autoComplete="email"
               required
             />
           </div>
 
           <div className="form-group">
-            <label htmlFor="login-password">
-              Password
-            </label>
+            <label>Password</label>
 
             <input
-              id="login-password"
               type="password"
               value={password}
-              onChange={(event) =>
-                setPassword(event.target.value)
+              onChange={(e) =>
+                setPassword(e.target.value)
               }
-              autoComplete="current-password"
               required
             />
           </div>
 
           <button
             className="primary-button"
-            type="submit"
             disabled={isSubmitting}
           >
             {isSubmitting
@@ -120,9 +91,9 @@ export default function LoginPage() {
         </form>
 
         <p className="auth-link">
-          Do not have an account?{" "}
+          Don't have an account?{" "}
           <Link to="/register">
-            Create an account
+            Register
           </Link>
         </p>
       </div>
