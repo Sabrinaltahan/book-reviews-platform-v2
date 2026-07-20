@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000/api";
+const API_URL = "https://book-reviews-platform-v2.onrender.com";
 
 export async function apiRequest<T>(
   endpoint: string,
