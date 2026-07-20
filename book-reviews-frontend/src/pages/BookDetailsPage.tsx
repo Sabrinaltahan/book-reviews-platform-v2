@@ -184,6 +184,12 @@ export default function BookDetailsPage() {
       return;
     }
 
+if (!book) {
+  setReviewError("Book information is not available.");
+  return;
+}
+
+
     try {
       setIsSubmitting(true);
 
@@ -227,6 +233,20 @@ export default function BookDetailsPage() {
       setIsSubmitting(false);
     }
   }
+
+
+  if (isLoading) {
+  return <p>Loading book...</p>;
+}
+
+if (error) {
+  return <p>{error}</p>;
+}
+
+if (!book) {
+  return <p>Book not found.</p>;
+}
+
 
   return (
     <section className="book-details-page">
