@@ -1,4 +1,9 @@
-const API_URL = "https://book-reviews-platform-v2.onrender.com";
+const API_URL =
+  "https://book-reviews-platform-v2.onrender.com/api";
+
+interface ApiErrorResponse {
+  message?: string;
+}
 
 export async function apiRequest<T>(
   endpoint: string,
@@ -8,22 +13,51 @@ export async function apiRequest<T>(
 
   const headers = new Headers(options.headers);
 
-  headers.set("Content-Type", "application/json");
+  if (!headers.has("Content-Type")) {
+    headers.set("Content-Type", "application/json");
+  }
 
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_URL}${endpoint}`, {
-    ...options,
-    headers,
-  });
+  const normalizedEndpoint = endpoint.startsWith("/")
+    ? endpoint
+    : `/${endpoint}`;
 
-  const data = await response.json();
+  const response = await fetch(
+    `${API_URL}${normalizedEndpoint}`,
+    {
+      ...options,
+      headers,
+    }
+  );
+
+  const contentType =
+    response.headers.get("content-type");
+
+  let data: T | ApiErrorResponse;
+
+  if (
+    contentType?.includes("application/json")
+  ) {
+    data = await response.json();
+  } else {
+    const responseText = await response.text();
+
+    throw new Error(
+      responseText
+        ? "The server returned an invalid response."
+        : "The server did not return a response."
+    );
+  }
 
   if (!response.ok) {
+    const errorData = data as ApiErrorResponse;
+
     throw new Error(
-      data.message || "Something went wrong."
+      errorData.message ||
+        `Request failed with status ${response.status}.`
     );
   }
 
