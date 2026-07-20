@@ -1,5 +1,4 @@
 import {
-  createContext,
   useState,
   type ReactNode,
 } from "react";
@@ -8,24 +7,10 @@ import type {
   AuthResponse,
   User,
 } from "../types/auth";
+import{AuthContext} from "./AuthContextDefinition";
 
-interface AuthContextValue {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-  login: (
-    email: string,
-    password: string
-  ) => Promise<void>;
-  register: (
-    name: string,
-    email: string,
-    password: string
-  ) => Promise<void>;
-  logout: () => void;
-}
-export const AuthContext =
-  createContext<AuthContextValue | undefined>(undefined);
+
+
 
 interface AuthProviderProps {
   children: ReactNode;
